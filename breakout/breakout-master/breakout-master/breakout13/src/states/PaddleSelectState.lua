@@ -48,7 +48,7 @@ function PaddleSelectState:update(dt)
         gStateMachine:change('serve', {
             paddle = Paddle(self.currentPaddle),
             bricks = LevelMaker.createMap(32),
-            health = 3,
+            health = 5,
             score = 0,
             highScores = self.highScores,
             level = 32,

@@ -268,7 +268,7 @@ end
 ]]
 function renderHealth(health)
     -- start of our health rendering
-    local healthX = VIRTUAL_WIDTH - 100
+    local healthX = VIRTUAL_WIDTH - 120
     
     -- render health left
     for i = 1, health do
@@ -277,7 +277,7 @@ function renderHealth(health)
     end
 
     -- render missing health
-    for i = 1, 3 - health do
+    for i = 1, 5 - health do
         love.graphics.draw(gTextures['hearts'], gFrames['hearts'][2], healthX, 4)
         healthX = healthX + 11
     end
