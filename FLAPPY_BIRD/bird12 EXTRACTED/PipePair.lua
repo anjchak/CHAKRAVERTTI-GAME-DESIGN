@@ -13,7 +13,9 @@ PipePair = Class{}
 -- size of the gap between pipes
 
 function PipePair:init(y)
+    -- randomize the gap height between 90 and 120 pixels
     GAP_HEIGHT = math.random(90, 120)
+    
     -- flag to hold whether this pair has been scored (jumped through)
     self.scored = false
 

@@ -25,6 +25,8 @@ function PlayState:init()
 
     -- initialize our last recorded Y value for a gap placement to base other gaps off of
     self.lastY = -PIPE_HEIGHT + math.random(80) + 20
+    
+    -- assigns a random number between 1.75 and 3.5 to timer 
     timer = math.random(1.75, 3.5)
 end
 
