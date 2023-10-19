@@ -41,7 +41,20 @@ function ServeState:update(dt)
         -- pass in all important state info to the PlayState
         gStateMachine:change('play', {
             paddle = self.paddle,
-            bricks = self.bricks,
+            bricks = LevelMaker.createMap(32),
+            health = self.health,
+            score = self.score,
+            highScores = self.highScores,
+            ball = self.ball,
+            level = self.level,
+            recoverPoints = self.recoverPoints
+        })
+    end
+
+    if love.keyboard.wasPressed('r') and self.health == 5 then
+        gStateMachine:change('serve', {
+            paddle = self.paddle,
+            bricks = LevelMaker.createMap(32),
             health = self.health,
             score = self.score,
             highScores = self.highScores,
