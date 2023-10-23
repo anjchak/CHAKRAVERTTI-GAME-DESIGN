@@ -227,6 +227,5 @@ function PlayState:checkVictory()
             return false
         end 
     end
-
     return true
 end
