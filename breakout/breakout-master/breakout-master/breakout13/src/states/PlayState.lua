@@ -199,6 +199,7 @@ end
 
 function PlayState:render()
     -- render bricks
+
     for k, brick in pairs(self.bricks) do
         brick:render()
     end
