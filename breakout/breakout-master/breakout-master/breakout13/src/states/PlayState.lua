@@ -34,9 +34,27 @@ function PlayState:enter(params)
     -- give ball random starting velocity
     self.ball.dx = math.random(-200, 200)
     self.ball.dy = math.random(-50, -60)
+
+    self.powerup = Powerup()
+    self.powerup.skin = math.random(10)
+
+    self.timer = 0
+    self.time = math.random(2, 10)
 end
 
 function PlayState:update(dt)
+
+    self.timer = self.timer + dt
+    if self.timer > self.time then 
+        self.powerup.x = math.random(0, VIRTUAL_WIDTH)
+        self.powerup.y = 0
+
+        self.powerup:update(dt)
+        self.timer = 0 
+        self.time = math.random(2, 10)
+        self.powerup.skin = math.random(10)
+    end
+
     if self.paused then
         if love.keyboard.wasPressed('space') then
             self.paused = false
@@ -53,6 +71,7 @@ function PlayState:update(dt)
     -- update positions based on velocity
     self.paddle:update(dt)
     self.ball:update(dt)
+    self.powerup:update(dt)
 
     if self.ball:collides(self.paddle) then
         -- raise ball above paddle in case it goes below it, then reverse dy
@@ -98,6 +117,8 @@ function PlayState:update(dt)
                 -- play recover sound effect
                 gSounds['recover']:play()
             end
+
+            
 
             -- go to our victory screen if there are no more bricks left
             if self:checkVictory() then
@@ -187,6 +208,7 @@ function PlayState:update(dt)
         end
     end
 
+
     -- for rendering particle systems
     for k, brick in pairs(self.bricks) do
         brick:update(dt)
@@ -211,6 +233,7 @@ function PlayState:render()
 
     self.paddle:render()
     self.ball:render()
+    self.powerup:render()
 
     renderScore(self.score)
     renderHealth(self.health)
@@ -220,6 +243,7 @@ function PlayState:render()
         love.graphics.setFont(gFonts['large'])
         love.graphics.printf("PAUSED", 0, VIRTUAL_HEIGHT / 2 - 16, VIRTUAL_WIDTH, 'center')
     end
+
 end
 
 function PlayState:checkVictory()
