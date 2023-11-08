@@ -3,7 +3,7 @@ Powerup = Class{}
 
 function Powerup:init(skin)
     self.x = VIRTUAL_WIDTH / 2 + math.random(-3,3)
-    self.y = VIRTUAL_HEIGHT / 2 + math.random(-3,3)
+    self.y = 0
 
     self.width = 16
     self.height = 16
@@ -31,6 +31,17 @@ function Powerup:collides(target)
     if self.y > target.y + target.height or target.y > self.y + self.height then
         return false
     end 
+
+    return true
+end
+
+function Powerup:reset()
+    self.x = VIRTUAL_WIDTH / 2 + math.random(-3,3)
+    self.y = 0
+    self.dx = 20
+    self.dy = 0
+
+    self.skin = skin
 end
 
 function Powerup:render()

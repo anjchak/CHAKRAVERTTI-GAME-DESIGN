@@ -39,7 +39,7 @@ function PlayState:enter(params)
     self.powerup.skin = math.random(10)
 
     self.timer = 0
-    self.time = math.random(2, 10)
+    self.time = math.random(5, 10)
 end
 
 function PlayState:update(dt)
@@ -51,9 +51,10 @@ function PlayState:update(dt)
 
         self.powerup:update(dt)
         self.timer = 0 
-        self.time = math.random(2, 10)
+        self.time = math.random(5, 10)
         self.powerup.skin = math.random(10)
     end
+
 
     if self.paused then
         if love.keyboard.wasPressed('space') then
@@ -72,6 +73,11 @@ function PlayState:update(dt)
     self.paddle:update(dt)
     self.ball:update(dt)
     self.powerup:update(dt)
+
+    if self.powerup:collides(self.paddle) then
+        self.powerup.skin = math.random(10)
+        self.powerup:reset()
+    end
 
     if self.ball:collides(self.paddle) then
         -- raise ball above paddle in case it goes below it, then reverse dy
@@ -105,6 +111,8 @@ function PlayState:update(dt)
 
             -- trigger the brick's hit function, which removes it from play
             brick:hit()
+
+
 
             -- if we have enough points, recover a point of health
             if self.score > self.recoverPoints then
