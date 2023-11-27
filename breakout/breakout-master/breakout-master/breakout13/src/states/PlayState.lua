@@ -28,7 +28,7 @@ function PlayState:enter(params)
     self.highScores = params.highScores
     self.level = params.level
     self.balls = {params.ball}
-
+    
     self.recoverPoints = 5000
     self.timer = 0
 
@@ -56,6 +56,15 @@ function PlayState:update(dt)
 
     -- update positions based on velocity
     self.paddle:update(dt)
+
+    -- POWERUP RANDOM SPAWN HERE
+    self.timer = self.timer + dt
+    if self.timer >= math.random(8, 10) then
+        skin = math.random(10)
+        powerup = Powerup(skin, math.random(VIRTUAL_WIDTH), 0)
+        table.insert(self.powerups, powerup)
+        self.timer = 0
+    end
 
     for k, ball in pairs(self.balls) do
         ball:update(dt)
@@ -85,7 +94,7 @@ function PlayState:update(dt)
         for k, brick in pairs(self.bricks) do
 
             -- only check collision if we're in play
-            if brick.inPlay and self.ball:collides(brick) then
+            if brick.inPlay and ball:collides(brick) then
 
                 -- add to score
                 self.score = self.score + (brick.tier * 200 + brick.color * 25)
@@ -106,17 +115,6 @@ function PlayState:update(dt)
                     -- play recover sound effect
                     gSounds['recover']:play()
                 end
-
-                -- POWERUP RANDOM SPAWN HERE
-                self.timer = self.timer + dt
-                if self.timer < 3 then
-                    skin = math.random(10)
-                    powerup = Powerup(skin, math.random(VIRTUAL_WIDTH), 0)
-                    table.insert(self.powerups, powerup)
-                else
-                    self.timer = 0
-                end
-
 
                 -- go to our victory screen if there are no more bricks left
                 if self:checkVictory() then
@@ -182,11 +180,17 @@ function PlayState:update(dt)
                 break
             end
         end
+
         --  POWERUP COLLISION/UPDATE HERE
         for k, powerup in pairs(self.powerups) do
             powerup:update(dt)
             if powerup:collides(self.paddle) then
                 table.remove(self.powerups, k)
+                ballNew = Ball(math.random(7), 
+                self.paddle.x + (self.paddle.width / 2) - 4, self.paddle.y - 8, 
+                math.random(-200, 200), math.random(-50, -60))
+
+                table.insert(self.balls, ballNew)
             end
             if powerup.y > VIRTUAL_HEIGHT then
                 table.remove(self.powerups, k)
@@ -195,8 +199,8 @@ function PlayState:update(dt)
 
 
         -- if ball goes below bounds, revert to serve state and decrease health
-        if ball.y >= VIRTUAL_HEIGHT then
-            if #balls <= 1 then
+        if ball.y > VIRTUAL_HEIGHT then
+            if #self.balls <= 1 then
                 self.health = self.health - 1
                 gSounds['hurt']:play()
 
@@ -244,7 +248,7 @@ function PlayState:render()
         brick:renderParticles()
     end
 
-    for k, ball in pairs(self.powerups) do
+    for k, ball in pairs(self.balls) do
         ball:render()
     end
 
