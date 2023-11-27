@@ -2,14 +2,14 @@ Powerup = Class{}
 
 
 function Powerup:init(skin)
-    self.x = VIRTUAL_WIDTH / 2 + math.random(-3,3)
+    self.x = math.random(0, VIRTUAL_WIDTH)
     self.y = 0
 
     self.width = 16
     self.height = 16
 
     self.dy = 0
-    self.dx = 20
+    self.dx = 0
 
     self.skin = skin
 end
@@ -36,12 +36,10 @@ function Powerup:collides(target)
 end
 
 function Powerup:reset()
-    self.x = VIRTUAL_WIDTH / 2 + math.random(-3,3)
+    self.x = math.random(0, VIRTUAL_WIDTH)
     self.y = 0
-    self.dx = 20
+    self.dx = 0
     self.dy = 0
-
-    self.skin = skin
 end
 
 function Powerup:render()
