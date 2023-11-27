@@ -38,6 +38,7 @@ function PlayState:enter(params)
 
     -- create a table of powerups
     self.powerups = {}
+    currentPaddleSize = SMALLEST_PADDLE
 end
 
 function PlayState:update(dt)
@@ -111,7 +112,7 @@ function PlayState:update(dt)
 
                     -- multiply recover points by 2
                     self.recoverPoints = math.min(100000, self.recoverPoints * 2)
-
+                    
                     -- play recover sound effect
                     gSounds['recover']:play()
                 end
