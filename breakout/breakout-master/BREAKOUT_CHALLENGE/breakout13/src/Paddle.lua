@@ -52,6 +52,9 @@ function Paddle:update(dt)
         self.dx = 0
     end
 
+    self.quad = gFrames['paddles'][self.size]
+    self.width = self.size * 32
+
     -- math.max here ensures that we're the greater of 0 or the player's
     -- current calculated Y position when pressing up so that we don't
     -- go into the negatives; the movement calculation is simply our
@@ -65,6 +68,7 @@ function Paddle:update(dt)
     else
         self.x = math.min(VIRTUAL_WIDTH - self.width, self.x + self.dx * dt)
     end
+
 end
 
 --[[

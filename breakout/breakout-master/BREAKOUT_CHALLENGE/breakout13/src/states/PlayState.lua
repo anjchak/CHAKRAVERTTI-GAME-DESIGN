@@ -38,6 +38,8 @@ function PlayState:enter(params)
 
     -- create a table of powerups
     self.powerups = {}
+    --key powerup
+    self.key = false
 end
 
 function PlayState:update(dt)
@@ -97,8 +99,11 @@ function PlayState:update(dt)
             if brick.inPlay and ball:collides(brick) then
 
                 -- add to score
-                self.score = self.score + (brick.tier * 200 + brick.color * 25)
-
+                if self.key and brick.locked then
+                    self.score = self.score + 1000
+                else
+                    self.score = self.score + (brick.tier * 200 + brick.color * 25)
+                end
                 -- trigger the brick's hit function, which removes it from play
                 brick:hit()
 
@@ -185,24 +190,24 @@ function PlayState:update(dt)
         for k, powerup in pairs(self.powerups) do
             powerup:update(dt)
             if powerup:collides(self.paddle) then
-                table.remove(self.powerups, k)
-                ballNew = Ball(math.random(7), 
-                self.paddle.x + (self.paddle.width / 2) - 4, self.paddle.y - 8, 
-                math.random(-200, 200), math.random(-50, -60))
-
-                table.insert(self.balls, ballNew)
+                table.remove(self.powerups, k) 
             end
             if powerup.y > VIRTUAL_HEIGHT then
                 table.remove(self.powerups, k)
             end
         end
 
-
         -- if ball goes below bounds, revert to serve state and decrease health
         if ball.y > VIRTUAL_HEIGHT then
             if #self.balls <= 1 then
                 self.health = self.health - 1
-
+                -- reduce the score when a heart is lost to make the game more interesting
+                if self.score >= 400 then 
+                    self.score = self.score - 400
+                end
+                if self.score < 500 and self.paddle.size > SMALLEST_PADDLE then
+                    self.paddle.size = self.paddle.size - 1
+                end
                 gSounds['hurt']:play()
 
                 if self.health == 0 then
@@ -225,6 +230,14 @@ function PlayState:update(dt)
                 table.remove(self.balls, k)
             end
         end
+
+        if self.score >= 500 then
+            --self.paddle.size = 2            
+            if self.paddle.size < LARGEST_PADDLE then
+                self.paddle.size = self.paddle.size + 1
+            end
+        end
+
     end
 
     -- for rendering particle systems
@@ -261,6 +274,8 @@ function PlayState:render()
 
     renderScore(self.score)
     renderHealth(self.health)
+    love.graphics.printf(self.paddle.size, 0, VIRTUAL_HEIGHT / 3,
+    VIRTUAL_WIDTH, 'center')
 
     -- pause text, if paused
     if self.paused then

@@ -182,11 +182,17 @@ function PlayState:update(dt)
             end
         end
 
+
         --  POWERUP COLLISION/UPDATE HERE
         for k, powerup in pairs(self.powerups) do
             powerup:update(dt)
             if powerup:collides(self.paddle) then
                 table.remove(self.powerups, k)
+                ballNew = Ball(math.random(7), 
+                self.paddle.x + (self.paddle.width / 2) - 4, self.paddle.y - 8, 
+                math.random(-200, 200), math.random(-50, -60))
+
+                table.insert(self.balls, ballNew)
             end
             if powerup.y > VIRTUAL_HEIGHT then
                 table.remove(self.powerups, k)

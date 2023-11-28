@@ -71,6 +71,10 @@ function love.load()
         ['powerups'] = GenerateQuadsPowerups(gTextures['main'])
     }
 
+    -- smallest and biggest sizes for paddle
+    SMALLEST_PADDLE = 1
+    LARGEST_PADDLE = 4
+
     -- initialize our virtual resolution, which will be rendered within our
     -- actual window no matter its dimensions
     push:setupScreen(VIRTUAL_WIDTH, VIRTUAL_HEIGHT, WINDOW_WIDTH, WINDOW_HEIGHT, {
