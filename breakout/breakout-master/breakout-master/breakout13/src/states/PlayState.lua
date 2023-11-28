@@ -63,7 +63,7 @@ function PlayState:update(dt)
     if self.timer >= math.random(8, 10) then
         skin = math.random(10)
         powerup = Powerup(skin, math.random(VIRTUAL_WIDTH), 0)
-        table.insert(self.powerups, powerup)
+        table.insert(self.powerups, powerup) 
         self.timer = 0
     end
 
