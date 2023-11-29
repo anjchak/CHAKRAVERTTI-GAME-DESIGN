@@ -40,6 +40,9 @@ function PlayState:enter(params)
     self.powerups = {}
     --key powerup
     self.key = false
+
+    --variable for incrementing the pt limit for extending paddle
+    self.multiplier = 1
 end
 
 function PlayState:update(dt)
@@ -61,7 +64,7 @@ function PlayState:update(dt)
 
     -- POWERUP RANDOM SPAWN HERE
     self.timer = self.timer + dt
-    if self.timer >= math.random(8, 10) then
+    if self.timer >= math.random(5, 6) then
         skin = math.random(10)
         powerup = Powerup(skin, math.random(VIRTUAL_WIDTH), 0)
         table.insert(self.powerups, powerup)
@@ -101,13 +104,14 @@ function PlayState:update(dt)
                 -- add to score
                 if self.key and brick.locked then
                     self.score = self.score + 1000
-                else
+                    brick:hit(self.key)
+                    self.key = false
+                elseif not brick.locked then
                     self.score = self.score + (brick.tier * 200 + brick.color * 25)
+                    brick:hit(self.key)
                 end
                 -- trigger the brick's hit function, which removes it from play
-                brick:hit()
-
-
+                brick:hit(self.key)
 
                 -- if we have enough points, recover a point of health
                 if self.score > self.recoverPoints then
@@ -190,9 +194,23 @@ function PlayState:update(dt)
         for k, powerup in pairs(self.powerups) do
             powerup:update(dt)
             if powerup:collides(self.paddle) then
+                if powerup.skin == 10 then
+                    self.key = true
+                end
                 table.remove(self.powerups, k) 
-            end
-            if powerup.y > VIRTUAL_HEIGHT then
+
+                ballNew = Ball(math.random(7), 
+                self.paddle.x + (self.paddle.width / 2) - 4, self.paddle.y - 8, 
+                math.random(-200, 200), math.random(-50, -60))
+                table.insert(self.balls, ballNew)
+
+                table.insert(self.balls, ballNew)
+
+                ballNew = Ball(math.random(7), 
+                self.paddle.x + (self.paddle.width / 2) - 4, self.paddle.y - 8, 
+                math.random(-200, 200), math.random(-50, -60))
+                table.insert(self.balls, ballNew)
+            elseif powerup.y > VIRTUAL_HEIGHT then
                 table.remove(self.powerups, k)
             end
         end
@@ -202,9 +220,6 @@ function PlayState:update(dt)
             if #self.balls <= 1 then
                 self.health = self.health - 1
                 -- reduce the score when a heart is lost to make the game more interesting
-                if self.score >= 400 then 
-                    self.score = self.score - 400
-                end
                 if self.score < 500 and self.paddle.size > SMALLEST_PADDLE then
                     self.paddle.size = self.paddle.size - 1
                 end
@@ -231,11 +246,11 @@ function PlayState:update(dt)
             end
         end
 
-        if self.score >= 500 then
-            --self.paddle.size = 2            
+        if self.score >= self.multiplier * 500 then
             if self.paddle.size < LARGEST_PADDLE then
                 self.paddle.size = self.paddle.size + 1
             end
+            self.multiplier = self.multiplier + 1
         end
 
     end
@@ -276,6 +291,11 @@ function PlayState:render()
     renderHealth(self.health)
     love.graphics.printf(self.paddle.size, 0, VIRTUAL_HEIGHT / 3,
     VIRTUAL_WIDTH, 'center')
+
+    if self.key then
+        love.graphics.draw(gTextures['main'], gFrames['powerups'][10], 
+        VIRTUAL_WIDTH - 20, 20, 0, 0.6)
+    end
 
     -- pause text, if paused
     if self.paused then
