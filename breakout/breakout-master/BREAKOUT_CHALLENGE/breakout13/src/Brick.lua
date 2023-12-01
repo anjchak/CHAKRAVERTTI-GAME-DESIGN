@@ -85,6 +85,7 @@ end
     changing its color otherwise.
 ]]
 function Brick:hit(key)
+    --CHANGES FOR KEY CHALLENGE
     if self.locked and key then
         self.psystem:setColors(
             paletteColors[self.color].r / 255,
@@ -152,11 +153,12 @@ function Brick:update(dt)
 end
 
 function Brick:render()
+    --CHANGES FOR KEY CHALLENGE
     if self.inPlay and self.locked then
         love.graphics.draw(gTextures['main'], 
         -- multiply color by 4 (-1) to get our color offset, then add tier to that
         -- to draw the correct tier and color brick onto the screen
-        gFrames['bricks'][21],
+        gFrames['bricks'][22],
         self.x, self.y)
 
     elseif self.inPlay then

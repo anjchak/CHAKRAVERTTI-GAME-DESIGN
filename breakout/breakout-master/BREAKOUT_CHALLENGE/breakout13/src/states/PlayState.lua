@@ -28,6 +28,7 @@ function PlayState:enter(params)
     self.highScores = params.highScores
     self.level = params.level
     self.balls = {params.ball}
+    self.maxHealth = params.maxHealth
     
     self.recoverPoints = 5000
     self.timer = 0
@@ -111,12 +112,11 @@ function PlayState:update(dt)
                     brick:hit(self.key)
                 end
                 -- trigger the brick's hit function, which removes it from play
-                brick:hit(self.key)
 
                 -- if we have enough points, recover a point of health
                 if self.score > self.recoverPoints then
-                    -- can't go above 3 health
-                    self.health = math.min(3, self.health + 1)
+                    -- can't go above 2 less than max health
+                    self.health = math.min(self.maxHealth - 2, self.health + 1)
 
                     -- multiply recover points by 2
                     self.recoverPoints = math.min(100000, self.recoverPoints * 2)
@@ -197,6 +197,15 @@ function PlayState:update(dt)
                 if powerup.skin == 10 then
                     self.key = true
                 end
+
+                if powerup.skin == 3 then
+                    --if current health already equals max health, give another heart
+                    if self.health == self.maxHealth then
+                        self.health = self.health + 1
+                    end
+                    self.maxHealth = self.maxHealth + 1
+                end
+
                 table.remove(self.powerups, k) 
 
                 ballNew = Ball(math.random(7), 
@@ -219,7 +228,7 @@ function PlayState:update(dt)
         if ball.y > VIRTUAL_HEIGHT then
             if #self.balls <= 1 then
                 self.health = self.health - 1
-                -- reduce the score when a heart is lost to make the game more interesting
+                -- decrease paddle size
                 if self.score < 500 and self.paddle.size > SMALLEST_PADDLE then
                     self.paddle.size = self.paddle.size - 1
                 end
@@ -238,7 +247,8 @@ function PlayState:update(dt)
                         score = self.score,
                         highScores = self.highScores,
                         level = self.level,
-                        recoverPoints = self.recoverPoints
+                        recoverPoints = self.recoverPoints,
+                        maxHealth = self.maxHealth
                     })
                 end
             else
@@ -288,13 +298,12 @@ function PlayState:render()
     self.paddle:render()
 
     renderScore(self.score)
-    renderHealth(self.health)
-    love.graphics.printf(self.paddle.size, 0, VIRTUAL_HEIGHT / 3,
-    VIRTUAL_WIDTH, 'center')
+    --pass in max health now
+    renderHealth(self.health, self.maxHealth)
 
     if self.key then
         love.graphics.draw(gTextures['main'], gFrames['powerups'][10], 
-        VIRTUAL_WIDTH - 20, 20, 0, 0.6)
+        VIRTUAL_WIDTH + 50, 0, 0, 0.6)
     end
 
     -- pause text, if paused

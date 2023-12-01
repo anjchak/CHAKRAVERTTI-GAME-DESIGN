@@ -272,9 +272,9 @@ end
     Renders hearts based on how much health the player has. First renders
     full hearts, then empty hearts for however much health we're missing.
 ]]
-function renderHealth(health)
+function renderHealth(health, maxHealth)
     -- start of our health rendering
-    local healthX = VIRTUAL_WIDTH - 120
+    local healthX = VIRTUAL_WIDTH - 60 - (12 * maxHealth)
     
     -- render health left
     for i = 1, health do
@@ -283,7 +283,7 @@ function renderHealth(health)
     end
 
     -- render missing health
-    for i = 1, 5 - health do
+    for i = 1, maxHealth - health do
         love.graphics.draw(gTextures['hearts'], gFrames['hearts'][2], healthX, 4)
         healthX = healthX + 11
     end

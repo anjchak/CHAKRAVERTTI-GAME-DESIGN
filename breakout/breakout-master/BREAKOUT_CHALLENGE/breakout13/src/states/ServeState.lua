@@ -25,7 +25,7 @@ function ServeState:enter(params)
     self.highScores = params.highScores
     self.level = params.level
     self.recoverPoints = params.recoverPoints
-
+    self.maxHealth = params.maxHealth
     -- init new ball (random color for fun)
     self.ball = Ball()
     self.ball.skin = math.random(7)
@@ -47,7 +47,8 @@ function ServeState:update(dt)
             highScores = self.highScores,
             ball = self.ball,
             level = self.level,
-            recoverPoints = self.recoverPoints
+            recoverPoints = self.recoverPoints,
+            maxHealth = self.maxHealth
         })
     end
 
@@ -60,7 +61,8 @@ function ServeState:update(dt)
             highScores = self.highScores,
             ball = self.ball,
             level = self.level,
-            recoverPoints = self.recoverPoints
+            recoverPoints = self.recoverPoints,
+            maxHealth = self.maxHealth
         })
     end
 
@@ -78,7 +80,8 @@ function ServeState:render()
     end
 
     renderScore(self.score)
-    renderHealth(self.health)
+    --set max health to 5
+    renderHealth(self.health, self.maxHealth)
 
     love.graphics.setFont(gFonts['large'])
     love.graphics.printf('Level ' .. tostring(self.level), 0, VIRTUAL_HEIGHT / 3,
