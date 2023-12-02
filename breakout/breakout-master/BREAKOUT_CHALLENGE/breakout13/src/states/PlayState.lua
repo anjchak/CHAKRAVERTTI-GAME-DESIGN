@@ -66,8 +66,8 @@ function PlayState:update(dt)
     -- POWERUP RANDOM SPAWN HERE
     self.timer = self.timer + dt
     if self.timer >= math.random(5, 6) then
-        skin = math.random(10)
-        --skin = 3
+        --skin = math.random(10)
+        skin = 3
         powerup = Powerup(skin, math.random(VIRTUAL_WIDTH - 16), 16)
         table.insert(self.powerups, powerup)
         self.timer = 0
@@ -213,7 +213,7 @@ function PlayState:update(dt)
                         self.health = self.health + 1
                     -- otherwise only increase current max health
                     else
-                        self.maxHealth = self.maxHealth
+                        self.maxHealth = self.maxHealth + 1
                     end
                 end
 
