@@ -42,8 +42,9 @@ function PlayState:enter(params)
     --key powerup
     self.key = false
 
-    --variable for incrementing the pt limit for extending paddle
-    self.multiplier = 1
+    --small and largest paddle sizes
+    self.smallestPaddle = 1
+    self.largestPaddle = 4
 end
 
 function PlayState:update(dt)
@@ -115,13 +116,18 @@ function PlayState:update(dt)
                 -- trigger the brick's hit function, which removes it from play
 
                 -- if we have enough points, recover a point of health
-                if self.score > self.recoverPoints and self.health + 1 < self.maxHealth then
+                if self.score > self.recoverPoints then
                     -- can't go above 2 less than max health
-                    self.health = math.min(self.maxHealth - 2, self.health + 1)
-
+                    if self.health + 1 < self.maxHealth then
+                        self.health = math.min(self.maxHealth - 2, self.health + 1)
+                    end
                     -- multiply recover points by 2
                     self.recoverPoints = math.min(100000, self.recoverPoints * 2)
-                    
+
+                    if self.paddle.size < self.largestPaddle then
+                        self.paddle.size = self.paddle.size + 1
+                    end 
+
                     -- play recover sound effect
                     gSounds['recover']:play()
                 end
@@ -235,12 +241,13 @@ function PlayState:update(dt)
             end
         end
 
+
         -- if ball goes below bounds, revert to serve state and decrease health
         if ball.y > VIRTUAL_HEIGHT then
             if #self.balls <= 1 then
                 self.health = self.health - 1
                 -- decrease paddle size
-                if self.paddle.size > SMALLEST_PADDLE then
+                if self.paddle.size > self.smallestPaddle then
                     self.paddle.size = self.paddle.size - 1
                 end
                 gSounds['hurt']:play()
@@ -266,14 +273,6 @@ function PlayState:update(dt)
                 table.remove(self.balls, k)
             end
         end
-
-        if self.score >= self.multiplier * 500 then
-            if self.paddle.size < LARGEST_PADDLE then
-                self.paddle.size = self.paddle.size + 1
-            end
-            self.multiplier = self.multiplier + 1
-        end
-
     end
 
     -- for rendering particle systems

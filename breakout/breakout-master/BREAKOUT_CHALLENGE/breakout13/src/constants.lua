@@ -23,7 +23,3 @@ PADDLE_SPEED = 200
 
 --max number of health allowed
 MAX_TOTAL_HEALTH = 10
-
--- smallest and biggest sizes for paddle
-SMALLEST_PADDLE = 1
-LARGEST_PADDLE = 4
