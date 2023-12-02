@@ -21,6 +21,7 @@ function VictoryState:enter(params)
     self.health = params.health
     self.ball = params.ball
     self.recoverPoints = params.recoverPoints
+    self.maxHealth = params.maxHealth
 end
 
 function VictoryState:update(dt)
@@ -39,7 +40,8 @@ function VictoryState:update(dt)
             health = self.health,
             score = self.score,
             highScores = self.highScores,
-            recoverPoints = self.recoverPoints
+            recoverPoints = self.recoverPoints,
+            maxHealth = self.maxHealth
         })
     end
 end
@@ -48,7 +50,7 @@ function VictoryState:render()
     self.paddle:render()
     self.ball:render()
 
-    renderHealth(self.health)
+    renderHealth(self.health, self.maxHealth)
     renderScore(self.score)
 
     -- level complete text

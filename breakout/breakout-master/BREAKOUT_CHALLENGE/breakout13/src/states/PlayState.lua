@@ -67,7 +67,8 @@ function PlayState:update(dt)
     self.timer = self.timer + dt
     if self.timer >= math.random(5, 6) then
         skin = math.random(10)
-        powerup = Powerup(skin, math.random(VIRTUAL_WIDTH), 0)
+        --skin = 3
+        powerup = Powerup(skin, math.random(VIRTUAL_WIDTH - 16), 16)
         table.insert(self.powerups, powerup)
         self.timer = 0
     end
@@ -114,7 +115,7 @@ function PlayState:update(dt)
                 -- trigger the brick's hit function, which removes it from play
 
                 -- if we have enough points, recover a point of health
-                if self.score > self.recoverPoints then
+                if self.score > self.recoverPoints and self.health + 1 < self.maxHealth then
                     -- can't go above 2 less than max health
                     self.health = math.min(self.maxHealth - 2, self.health + 1)
 
@@ -136,7 +137,8 @@ function PlayState:update(dt)
                         score = self.score,
                         highScores = self.highScores,
                         ball = ball,
-                        recoverPoints = self.recoverPoints
+                        recoverPoints = self.recoverPoints,
+                        maxHealth = self.maxHealth
                     })
                 end
 
@@ -199,11 +201,20 @@ function PlayState:update(dt)
                 end
 
                 if powerup.skin == 3 then
-                    --if current health already equals max health, give another heart
-                    if self.health == self.maxHealth then
+                    --if current health is at 10 (MAX_TOTAL_HEALTH), then check to see if max health is greater than current health
+                    -- if its greater add health, otherwise don't do anything
+                    if self.maxHealth == MAX_TOTAL_HEALTH then
+                        if self.maxHealth > self.health then
+                            self.health = self.health + 1
+                        end
+                    -- if current health is equal to current max health, increase both
+                    elseif self.maxHealth == self.health then
+                        self.maxHealth = self.maxHealth + 1
                         self.health = self.health + 1
+                    -- otherwise only increase current max health
+                    else
+                        self.maxHealth = self.maxHealth
                     end
-                    self.maxHealth = self.maxHealth + 1
                 end
 
                 table.remove(self.powerups, k) 
@@ -303,7 +314,7 @@ function PlayState:render()
 
     if self.key then
         love.graphics.draw(gTextures['main'], gFrames['powerups'][10], 
-        VIRTUAL_WIDTH + 50, 0, 0, 0.6)
+        60, 5, 40)
     end
 
     -- pause text, if paused
