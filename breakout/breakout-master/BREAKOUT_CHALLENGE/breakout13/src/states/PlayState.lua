@@ -240,7 +240,7 @@ function PlayState:update(dt)
             if #self.balls <= 1 then
                 self.health = self.health - 1
                 -- decrease paddle size
-                if self.score < 500 and self.paddle.size > SMALLEST_PADDLE then
+                if self.paddle.size > SMALLEST_PADDLE then
                     self.paddle.size = self.paddle.size - 1
                 end
                 gSounds['hurt']:play()
