@@ -91,10 +91,6 @@ function PlayState:update(dt)
     -- update bird based on gravity and input
     self.bird:update(dt)
 
-    if love.keyboard.wasPressed('space'):
-        scrolling = false
-        love.graphics.newImage("") -- FINISH THIS PLS
-
     -- reset if we get to the ground
     if self.bird.y > VIRTUAL_HEIGHT - 15 then
         sounds['explosion']:play()
@@ -109,6 +105,17 @@ end
 function PlayState:render()
     for k, pair in pairs(self.pipePairs) do
         pair:render()
+    end
+
+    --rendering images
+    if self.score >= 2 and self.score < 5 then
+        love.graphics.draw(shrug, VIRTUAL_WIDTH - 30, 8, 0.05, 0.05)
+    end
+    if self.score >= 5 and self.score < 7 then
+        love.graphics.draw(thumbs_up, VIRTUAL_WIDTH - 30, 8, 0.04, 0.04)
+    end
+    if self.score >= 7 then
+        love.graphics.draw(celebrate, VIRTUAL_WIDTH - 30, 8, 0.05, 0.05)
     end
 
     love.graphics.setFont(flappyFont)

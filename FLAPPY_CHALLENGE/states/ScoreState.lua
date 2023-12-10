@@ -33,14 +33,5 @@ function ScoreState:render()
     love.graphics.setFont(mediumFont)
     love.graphics.printf('Score: ' .. tostring(self.score), 0, 100, VIRTUAL_WIDTH, 'center')
 
-    if self.score >= 3 and self.score <= 5:
-        love.graphics.newImage('thumbs_down.png')
-    
-    if self.score >= 6 and self.score <= 12:
-        love.graphics.newImage('shrug.png')
-
-    if self.score >= 13:
-        love.graphics.newImage('thumbs_up.png')
-
     love.graphics.printf('Press Enter to Play Again!', 0, 160, VIRTUAL_WIDTH, 'center')
 end

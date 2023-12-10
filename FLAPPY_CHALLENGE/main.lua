@@ -79,6 +79,11 @@ function love.load()
     hugeFont = love.graphics.newFont('flappy.ttf', 56)
     love.graphics.setFont(flappyFont)
 
+    --image definitions
+    shrug = love.graphics.newImage('shrug_emoji.png')
+    thumbs_up = love.graphics.newImage('thumbs_up.png')
+    celebrate = love.graphics.newImage('celebrate.png')
+
     -- initialize our table of sounds
     sounds = {
         ['jump'] = love.audio.newSource('jump.wav', 'static'),
