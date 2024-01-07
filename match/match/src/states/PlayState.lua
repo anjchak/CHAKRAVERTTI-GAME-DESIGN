@@ -195,7 +195,11 @@ function PlayState:calculateMatches()
 
         -- add score for each match
         for k, match in pairs(matches) do
-            self.score = self.score + #match * 50
+            
+            --increase based off the type of variety/level
+            for j, tile in pairs(matches) do
+                self.score = self.score + #match * 50 * math.min(self.level, 2)
+            end
             self.timer = self.timer + #match
         end
 
