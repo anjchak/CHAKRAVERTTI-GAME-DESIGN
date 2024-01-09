@@ -59,6 +59,23 @@ function Board:initializeTiles()
     end
 end
 
+--function to store initial state of the board
+function Board:copyBoard()
+    local copiedBoard = {}
+
+    for y = 1, 8 do
+        table.insert(copiedBoard, {})
+
+        for x = 1, 8 do
+            oldTile = self.tiles[y][x]
+            newTile = {x = oldTile.x, y = oldTile.y, color = oldTile.color, variety = oldTile.variety, shiny = oldTile.shiny}
+            table.insert(copiedBoard[y], newTile)
+        end
+    end
+
+    return copiedBoard
+end
+
 --[[
     Goes left to right, top to bottom in the board, calculating matches by counting consecutive
     tiles of the same color. Doesn't need to check the last tile in every row or column if the 

@@ -105,6 +105,8 @@ function PlayState:update(dt)
         })
     end
 
+    self.copiedBoard = self.board:copyBoard()
+
     if self.canInput then
         -- move cursor around based on bounds of grid, playing sounds
         if love.keyboard.wasPressed('up') then
@@ -195,7 +197,6 @@ function PlayState:calculateMatches()
 
         -- add score for each match
         for k, match in pairs(matches) do
-            
             --increase based off the type of variety/level
             for j, tile in pairs(matches) do
                 self.score = self.score + #match * 50 * math.min(self.level, 2)
@@ -217,9 +218,12 @@ function PlayState:calculateMatches()
             -- as a result of falling blocks once new blocks have finished falling
             self:calculateMatches()
         end)
+        self.copiedBoard = self.board:copyBoard()
     
     -- if no matches, we can continue playing
     else
+        -- reset the board to the original
+        self.board = self.copiedBoard
         self.canInput = true
     end
 end

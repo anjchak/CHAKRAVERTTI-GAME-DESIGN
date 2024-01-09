@@ -38,6 +38,8 @@ require 'states/CountdownState'
 require 'states/PlayState'
 require 'states/ScoreState'
 require 'states/TitleScreenState'
+-- including pause state
+require 'states/PauseState'
 
 require 'Bird'
 require 'Pipe'
@@ -50,6 +52,9 @@ WINDOW_HEIGHT = 720
 -- virtual resolution dimensions
 VIRTUAL_WIDTH = 512
 VIRTUAL_HEIGHT = 288
+
+--whether game is paused or not
+PAUSED = false
 
 local background = love.graphics.newImage('background.png')
 local backgroundScroll = 0
@@ -83,6 +88,7 @@ function love.load()
     shrug = love.graphics.newImage('shrug_emoji.png')
     thumbs_up = love.graphics.newImage('thumbs_up.png')
     celebrate = love.graphics.newImage('celebrate.png')
+    button = love.graphics.newImage('button.png')
 
     -- initialize our table of sounds
     sounds = {
@@ -92,7 +98,8 @@ function love.load()
         ['score'] = love.audio.newSource('score.wav', 'static'),
 
         -- https://freesound.org/people/xsgianni/sounds/388079/
-        ['music'] = love.audio.newSource('marios_way.mp3', 'static')
+        ['music'] = love.audio.newSource('marios_way.mp3', 'static'),
+        ['pause'] = love.audio.newSource('pause.wav', 'static')
     }
 
     -- kick off music
@@ -111,7 +118,9 @@ function love.load()
         ['title'] = function() return TitleScreenState() end,
         ['countdown'] = function() return CountdownState() end,
         ['play'] = function() return PlayState() end,
-        ['score'] = function() return ScoreState() end
+        ['score'] = function() return ScoreState() end,
+        -- including pause in state machine
+        ['pause'] = function() return PauseState() end
     }
     gStateMachine:change('title')
 
@@ -159,12 +168,15 @@ function love.mouse.wasPressed(button)
 end
 
 function love.update(dt)
-    -- scroll our background and ground, looping back to 0 after a certain amount
-    backgroundScroll = (backgroundScroll + BACKGROUND_SCROLL_SPEED * dt) % BACKGROUND_LOOPING_POINT
-    groundScroll = (groundScroll + GROUND_SCROLL_SPEED * dt) % VIRTUAL_WIDTH
-
     gStateMachine:update(dt)
 
+    -- if it's not currently paused then continue to scroll
+    if not PAUSED then
+        -- scroll our background and ground, looping back to 0 after a certain amount
+        backgroundScroll = (backgroundScroll + BACKGROUND_SCROLL_SPEED * dt) % BACKGROUND_LOOPING_POINT
+        groundScroll = (groundScroll + GROUND_SCROLL_SPEED * dt) % VIRTUAL_WIDTH
+    end
+    
     love.keyboard.keysPressed = {}
     love.mouse.buttonsPressed = {}
 end
