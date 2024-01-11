@@ -41,12 +41,12 @@ function Board:initializeTiles()
 
             -- if the level is 1, then only have tiles of the 1st variety (smooth one)
             if self.level == 1 then
-                table.insert(self.tiles[tileY], Tile(tileX, tileY, math.random(18), 1, shiny))
+                table.insert(self.tiles[tileY], Tile(tileX, tileY, math.random(9), 1, shiny))
            
                 -- if it's not level 1, then randomize the variety 
             else
                 -- create a new tile at X,Y with a random color and variety
-                table.insert(self.tiles[tileY], Tile(tileX, tileY, math.random(18), math.random(6), shiny))
+                table.insert(self.tiles[tileY], Tile(tileX, tileY, math.random(9), math.random(6), shiny))
             end
         end
     end

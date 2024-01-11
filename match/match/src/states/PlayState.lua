@@ -53,6 +53,8 @@ function PlayState:init()
             gSounds['clock']:play()
         end
     end)
+
+    local copiedBoard = {}
 end
 
 function PlayState:enter(params)
@@ -68,6 +70,8 @@ function PlayState:enter(params)
 
     -- score we have to reach to get to the next level
     self.scoreGoal = self.level * 1.25 * 1000
+
+    copiedBoard = self.board:copyBoard()
 end
 
 function PlayState:update(dt)
@@ -104,8 +108,6 @@ function PlayState:update(dt)
             score = self.score
         })
     end
-
-    self.copiedBoard = self.board:copyBoard()
 
     if self.canInput then
         -- move cursor around based on bounds of grid, playing sounds
@@ -216,16 +218,28 @@ function PlayState:calculateMatches()
             
             -- recursively call function in case new matches have been created
             -- as a result of falling blocks once new blocks have finished falling
+            copiedBoard = self.board:copyBoard() 
             self:calculateMatches()
         end)
-        self.copiedBoard = self.board:copyBoard()
-    
     -- if no matches, we can continue playing
     else
         -- reset the board to the original
-        self.board = self.copiedBoard
+        -- update copied board
+        for y = 1, 8 do
+            for x = 1, 8 do
+                self.board.tiles[y][x].x = copiedBoard[y][x].x
+                self.board.tiles[y][x].y = copiedBoard[y][x].y
+                self.board.tiles[y][x].color = copiedBoard[y][x].color
+                self.board.tiles[y][x].variety = copiedBoard[y][x].variety
+                self.board.tiles[y][x].shiny = copiedBoard[y][x].shiny
+            end
+        end        
         self.canInput = true
+
     end
+    -- copying board at the end, regardless of if there's a match or not
+    copiedBoard = self.board:copyBoard()    
+
 end
 
 function PlayState:render()
